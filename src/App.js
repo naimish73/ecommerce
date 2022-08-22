@@ -9,6 +9,7 @@ import HomepageLayout from "./layouts/HomepageLayout";
 // pages
 import HomePage from "./pages/Homepage";
 import Login from "./pages/Login";
+import Recovery from "./pages/Recovery";
 import Registration from "./pages/Registration";
 
 const initialState = {
@@ -73,6 +74,14 @@ class App extends Component {
                             <MainLayout currentUser={currentUser}>
                                 <Login />
                                 {currentUser ? <Navigate to="/" /> : null}
+                            </MainLayout>
+                        }
+                    />
+                    <Route
+                        path="/recovery"
+                        element={
+                            <MainLayout>
+                                <Recovery />
                             </MainLayout>
                         }
                     />
