@@ -63,6 +63,7 @@ class App extends Component {
                         element={
                             <MainLayout currentUser={currentUser}>
                                 <Registration />
+                                {currentUser ? <Navigate to="/" /> : null}
                             </MainLayout>
                         }
                     />
