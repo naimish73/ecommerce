@@ -1,8 +1,11 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux/es/exports";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { auth, handleUserProfile } from "./firebase/utils";
 import { setCurrentUser } from "./redux/User/user.actions";
+
+//hoc
+import WithAuth from "./hoc/withAuth";
 
 //layouts
 import MainLayout from "./layouts/MainLayout";
@@ -13,13 +16,13 @@ import HomePage from "./pages/Homepage";
 import Login from "./pages/Login";
 import Recovery from "./pages/Recovery";
 import Registration from "./pages/Registration";
+import Dashboard from "./pages/Dashboard";
 
-class App extends Component {
-    authListener = null;
-    componentDidMount() {
-        const { setCurrentUser } = this.props;
+const App = (props) => {
+    const { setCurrentUser, currentUser } = props;
 
-        this.authListener = auth.onAuthStateChanged(async (userAuth) => {
+    useEffect(() => {
+        const authListener = auth.onAuthStateChanged(async (userAuth) => {
             if (userAuth) {
                 const userRef = await handleUserProfile(userAuth);
                 userRef.onSnapshot((snapshot) => {
@@ -31,55 +34,62 @@ class App extends Component {
             }
             setCurrentUser(userAuth);
         });
-    }
-    componentWillUnmount() {
-        this.authListener();
-    }
+        return () => {
+            authListener();
+        };
+    }, []);
 
-    render() {
-        const { currentUser } = this.props;
-        return (
-            <div className="App">
-                <Routes>
-                    <Route
-                        path="/"
-                        element={
-                            <HomepageLayout>
-                                <HomePage />
-                            </HomepageLayout>
-                        }
-                    />
-                    <Route
-                        path="/registration"
-                        element={
+    return (
+        <div className="App">
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        <HomepageLayout>
+                            <HomePage />
+                        </HomepageLayout>
+                    }
+                />
+                <Route
+                    path="/registration"
+                    element={
+                        <MainLayout>
+                            <Registration />
+                            {currentUser ? <Navigate to="/" /> : null}
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/login"
+                    element={
+                        <MainLayout>
+                            <Login />
+                            {currentUser ? <Navigate to="/" /> : null}
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/recovery"
+                    element={
+                        <MainLayout>
+                            <Recovery />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <WithAuth>
                             <MainLayout>
-                                <Registration />
-                                {currentUser ? <Navigate to="/" /> : null}
+                                <Dashboard />
                             </MainLayout>
-                        }
-                    />
-                    <Route
-                        path="/login"
-                        element={
-                            <MainLayout>
-                                <Login />
-                                {currentUser ? <Navigate to="/" /> : null}
-                            </MainLayout>
-                        }
-                    />
-                    <Route
-                        path="/recovery"
-                        element={
-                            <MainLayout>
-                                <Recovery />
-                            </MainLayout>
-                        }
-                    />
-                </Routes>
-            </div>
-        );
-    }
-}
+                        </WithAuth>
+                    }
+                />
+            </Routes>
+        </div>
+    );
+};
 
 const mapStateToProps = ({ user }) => ({
     currentUser: user.currentUser,
