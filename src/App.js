@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux/es/exports";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import { auth, handleUserProfile } from "./firebase/utils";
 import { setCurrentUser } from "./redux/User/user.actions";
 
@@ -20,6 +20,7 @@ import Dashboard from "./pages/Dashboard";
 
 const App = (props) => {
     const { setCurrentUser, currentUser } = props;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const authListener = auth.onAuthStateChanged(async (userAuth) => {
@@ -55,7 +56,6 @@ const App = (props) => {
                     element={
                         <MainLayout>
                             <Registration />
-                            {currentUser ? <Navigate to="/" /> : null}
                         </MainLayout>
                     }
                 />
@@ -64,7 +64,6 @@ const App = (props) => {
                     element={
                         <MainLayout>
                             <Login />
-                            {currentUser ? <Navigate to="/" /> : null}
                         </MainLayout>
                     }
                 />
@@ -79,7 +78,7 @@ const App = (props) => {
                 <Route
                     path="/dashboard"
                     element={
-                        <WithAuth>
+                        <WithAuth navigate={navigate}>
                             <MainLayout>
                                 <Dashboard />
                             </MainLayout>

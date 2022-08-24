@@ -20,6 +20,7 @@ const SignIn = (props) => {
         try {
             await auth.signInWithEmailAndPassword(email, password);
             resetForm();
+            props.navigate("/");
         } catch (err) {
             console.log(err);
         }

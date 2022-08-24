@@ -22,7 +22,7 @@ const Header = (props) => {
                     {currentUser && (
                         <ul>
                             <li>
-                                <Link to="/dashboard">Dashboard</Link>
+                                <Link to="/dashboard">My Account</Link>
                             </li>
                             <li>
                                 <span
@@ -38,9 +38,6 @@ const Header = (props) => {
                     )}
                     {!currentUser && (
                         <ul>
-                            <li>
-                                <Link to="/dashboard">Dashboard</Link>
-                            </li>
                             <li>
                                 <Link to="/registration">Register</Link>
                             </li>
