@@ -1,20 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles.scss";
-
-import { auth, handleUserProfile } from "./../../firebase/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { resetAllAuthForms, signUpUser } from "../../redux/User/user.actions";
 
 import AuthWrapper from "../AuthWrapper";
 import FormInput from "../forms/FormInput";
 import Button from "../forms/Button";
 import { useNavigate } from "react-router-dom";
 
+const mapState = ({ user }) => ({
+    signUpSuccess: user.signUpSuccess,
+    signUpError: user.signUpError,
+});
 const Signup = (props) => {
+    const navigate = useNavigate();
+    const { signUpSuccess, signUpError } = useSelector(mapState);
+    const dispatch = useDispatch();
     const [displayName, setDisplayName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassowrd] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errors, setErrors] = useState([]);
-    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (signUpSuccess) {
+            reset();
+            dispatch(resetAllAuthForms());
+            navigate("/");
+        }
+    }, [signUpSuccess, navigate, dispatch]);
+
+    useEffect(() => {
+        if (Array.isArray(signUpError) && signUpError.length > 0) {
+            setErrors(signUpError);
+        }
+    }, [signUpError]);
     const reset = () => {
         setDisplayName("");
         setEmail("");
@@ -22,24 +42,16 @@ const Signup = (props) => {
         setConfirmPassword("");
         setErrors([]);
     };
-    const handleFormSubmit = async (event) => {
-        event.preventDefault();
-        if (password !== confirmPassword) {
-            const err = ["Password don't match..."];
-            setErrors(err);
-            return;
-        }
-        try {
-            const { user } = await auth.createUserWithEmailAndPassword(
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        dispatch(
+            signUpUser({
+                displayName,
                 email,
-                password
-            );
-            await handleUserProfile(user, { displayName });
-            reset();
-            props.navigate("/");
-        } catch (err) {
-            console.log(err);
-        }
+                password,
+                confirmPassword,
+            })
+        );
     };
 
     const configAuthWrapper = {
