@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import "./styles.scss";
 import { Link, useNavigate } from "react-router-dom";
 import {
-    signInUser,
-    signInWithGoogle,
-    resetAllAuthForms,
+    emailSignInStart,
+    googleSignInStart,
 } from "../../redux/User/user.actions";
 
 import AuthWrapper from "../AuthWrapper";
@@ -13,13 +12,13 @@ import FormInput from "./../forms/FormInput";
 import Buttons from "./../forms/Button";
 
 const mapState = ({ user }) => ({
-    signInSuccess: user.signInSuccess,
+    currentUser: user.currentUser,
 });
 
 const SignIn = (props) => {
     const navigate = useNavigate();
-    const { signInSuccess } = useSelector(mapState);
     const dispatch = useDispatch();
+    const { currentUser } = useSelector(mapState);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const resetForm = () => {
@@ -27,15 +26,14 @@ const SignIn = (props) => {
         setPassword("");
     };
     useEffect(() => {
-        if (signInSuccess) {
+        if (currentUser) {
             resetForm();
-            dispatch(resetAllAuthForms());
             navigate("/");
         }
-    }, [signInSuccess, navigate, dispatch]);
+    }, [currentUser, navigate, dispatch]);
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(signInUser({ email, password }));
+        dispatch(emailSignInStart({ email, password }));
     };
 
     const configAuthWrapper = {
@@ -43,7 +41,7 @@ const SignIn = (props) => {
     };
 
     const handleGoogleSignIn = () => {
-        dispatch(signInWithGoogle());
+        dispatch(googleSignInStart());
     };
 
     return (
@@ -67,7 +65,7 @@ const SignIn = (props) => {
                     <Buttons type="submit">Login</Buttons>
                     <div className="socialSignin">
                         <div className="row">
-                            <Buttons onClick={handleGoogleSignIn}>
+                            <Buttons onClick={handleGoogleSignIn} type="button">
                                 Sign in with Google
                             </Buttons>
                         </div>
