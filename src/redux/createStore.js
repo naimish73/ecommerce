@@ -8,7 +8,11 @@ import rootSaga from "./rootSaga";
 const sagaMiddleware = createSagaMiddleware();
 export const middlewares = [thunk, logger, sagaMiddleware];
 
-export const store = createStore(rootReducer, applyMiddleware(...middlewares));
+export const store = createStore(
+    rootReducer,
+    applyMiddleware(...middlewares),
+    window.devToolsExtension && window.devToolsExtension()
+);
 sagaMiddleware.run(rootSaga);
 
 export default store;
