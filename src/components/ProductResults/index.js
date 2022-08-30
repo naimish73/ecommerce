@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux/es/exports";
 import { fetchProductsStart } from "../../redux/Products/products.actions";
 import "./styles.scss";
 import Product from "./Product";
+import FormSelect from "../FormSelect";
+import LoadMore from "../LoadMore";
+import { useNavigate, useParams } from "react-router-dom";
 
 const mapState = ({ productsData }) => ({
     products: productsData.products,
@@ -10,13 +13,21 @@ const mapState = ({ productsData }) => ({
 
 const ProductResults = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { filterType } = useParams();
     const { products } = useSelector(mapState);
+    const { data, queryDoc, isLastPage } = products;
 
     useEffect(() => {
-        dispatch(fetchProductsStart());
-    }, []);
+        dispatch(fetchProductsStart({ filterType }));
+    }, [dispatch, filterType]);
 
-    if (!Array.isArray(products)) return null;
+    const handleFilter = (e) => {
+        const nextFilter = e.target.value;
+        navigate(`/search/${nextFilter}`);
+    };
+
+    if (!Array.isArray(data)) return null;
 
     if (products.length < 1) {
         return (
@@ -26,13 +37,35 @@ const ProductResults = () => {
         );
     }
 
-    // console.log(products, "ggg");
+    const configFilters = {
+        defaultValue: filterType,
+        options: [
+            { name: "Show all", value: "" },
+            { name: "Mens", value: "mens" },
+            { name: "Womens", value: "womens" },
+        ],
+        handleChange: handleFilter,
+    };
+
+    const handleLoadMore = () => {
+        dispatch(
+            fetchProductsStart({
+                filterType,
+                startAfterDoc: queryDoc,
+                persistProducts: data,
+            })
+        );
+    };
+    const configLoadMore = {
+        onLoadMoreEvent: handleLoadMore,
+    };
 
     return (
         <div className="products">
             <h1>Browse Products</h1>
+            <FormSelect {...configFilters} />
             <div className="productResults">
-                {products.map((products, pos) => {
+                {data.map((products, pos) => {
                     const { productThumbnail, productName, productPrice } =
                         products;
                     if (
@@ -50,6 +83,7 @@ const ProductResults = () => {
                     return <Product {...configProduct} />;
                 })}
             </div>
+            {!isLastPage && <LoadMore {...configLoadMore} />}
         </div>
     );
 };

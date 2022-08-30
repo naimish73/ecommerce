@@ -44,8 +44,18 @@ const App = (props) => {
                         </HomepageLayout>
                     }
                 />
+
                 <Route
                     path="/search"
+                    element={
+                        <MainLayout>
+                            <Search />
+                        </MainLayout>
+                    }
+                />
+
+                <Route
+                    path="/search/:filterType"
                     element={
                         <MainLayout>
                             <Search />
