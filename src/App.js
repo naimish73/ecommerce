@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { checkUserSession } from "./redux/User/user.actions";
 
 //components
@@ -18,6 +18,7 @@ import DashBoardLayout from "./layouts/DashboardLayout";
 
 // pages
 import HomePage from "./pages/Homepage";
+import Search from "./pages/Search";
 import Login from "./pages/Login";
 import Recovery from "./pages/Recovery";
 import Registration from "./pages/Registration";
@@ -26,7 +27,6 @@ import Admin from "./pages/Admin";
 
 const App = (props) => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(checkUserSession());
@@ -42,6 +42,14 @@ const App = (props) => {
                         <HomepageLayout>
                             <HomePage />
                         </HomepageLayout>
+                    }
+                />
+                <Route
+                    path="/search"
+                    element={
+                        <MainLayout>
+                            <Search />
+                        </MainLayout>
                     }
                 />
                 <Route
