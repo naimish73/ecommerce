@@ -8,6 +8,7 @@ import {
 } from "../../redux/Products/products.actions";
 import "./styles.scss";
 import Button from "../forms/Button";
+import { addProduct } from "./../../redux/Cart/cart.actions";
 
 const mapState = (state) => ({
     product: state.productsData.product,
@@ -28,6 +29,11 @@ const ProductCart = ({}) => {
         };
     }, [dispatch, productID]);
 
+    const handleAddToCart = (product) => {
+        if (!product) return;
+        dispatch(addProduct(product));
+    };
+
     const configAddToCartButton = {
         type: "button",
     };
@@ -47,7 +53,12 @@ const ProductCart = ({}) => {
                     </li>
                     <li>
                         <div className="addToCart">
-                            <Button {...configAddToCartButton}>
+                            <Button
+                                {...configAddToCartButton}
+                                onClick={() => {
+                                    handleAddToCart(product);
+                                }}
+                            >
                                 Add to cart
                             </Button>
                         </div>
