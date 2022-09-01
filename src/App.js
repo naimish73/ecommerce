@@ -24,6 +24,7 @@ import Recovery from "./pages/Recovery";
 import Registration from "./pages/Registration";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
+import ProductDetails from "./pages/ProductDetails";
 
 const App = (props) => {
     const dispatch = useDispatch();
@@ -59,6 +60,14 @@ const App = (props) => {
                     element={
                         <MainLayout>
                             <Search />
+                        </MainLayout>
+                    }
+                />
+                <Route
+                    path="/product/:productID"
+                    element={
+                        <MainLayout>
+                            <ProductDetails />
                         </MainLayout>
                     }
                 />

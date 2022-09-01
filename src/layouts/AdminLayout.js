@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { signOutUserStart } from "./../redux/User/user.actions";
+// import "./../default.scss";
 
 import Header from "./../components/Header";
 import VerticalNav from "./../components/VerticalNav";
