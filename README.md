@@ -1,11 +1,11 @@
 # React Ecommerce App
 
-## Frontend Tech Stack:
+Frontend Tech Stack:
 - HTML/CSS/JS
 - React JS
 - SCSS
 - Redux
 
-## Backend Tech Stack:
+Backend Tech Stack:
 - Firebase
 
